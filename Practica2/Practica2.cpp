@@ -67,23 +67,37 @@ int main(int argc, char *argv[]){
         int auxIndicePuntoFuerte = 0;
         Punto *PuntosFuertes;
         PuntosFuertes = new Punto[n];
+        int auxPuntosFuertes = 0;
         int auxDomina = 0;
         bool noDominante = false;
-        for(int i = 0; i < n; i++){
-            for(int j = 0; j < n && noDominante; j++){
-                if(vector_puntos[i].getK(i) < vector_puntos[j].getK(i)){
-                    
-                }                  
-            }
-           
-         
+        bool encontrados = false;
 
+        cout << "Salida " << endl;
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < n ;j++){
+                if(vector_puntos[i].getK(i)>=vector_puntos[j].getK(j)){
+                    
+                        PuntosFuertes[auxPuntosFuertes] = vector_puntos[i];
+                        auxPuntosFuertes++;
+                }
+            }
+        }
+
+        //Posible punto fuerte
+        PuntosFuertes[auxPuntosFuertes] = vector_puntos[i]; 
+        auxPuntosFuertes++;
+        int i = 0;
+        while(!encontrados){
+            for(int j=0; i<n; i++){
+
+           }
         }
         
-        cout << "Puntos dominantes = " << auxDomina << endl;
-         /*for(int i = 0; i < auxDomina; i++){
+    
+        cout << "Numero de puntos dominantes: " << auxPuntosFuertes << endl << endl;
+         for(int i = 0; i < auxPuntosFuertes; i++){
            cout << "Punto Fuerte: " << PuntosFuertes[i].to_string() << endl;
-         }*/
+         }
         delete[] vector_puntos;
         delete [] PuntosFuertes;
     }
