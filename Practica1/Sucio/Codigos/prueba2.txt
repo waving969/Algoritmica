@@ -1,0 +1,1 @@
+Tamano Caso: 20		Tiempo de ejecucion: 4

@@ -1,0 +1,10 @@
+Tamano Caso: 10000		Tiempo de ejecucion: 1357
+Tamano Caso: 20000		Tiempo de ejecucion: 3164
+Tamano Caso: 30000		Tiempo de ejecucion: 4818
+Tamano Caso: 40000		Tiempo de ejecucion: 6166
+Tamano Caso: 50000		Tiempo de ejecucion: 7845
+Tamano Caso: 60000		Tiempo de ejecucion: 9754
+Tamano Caso: 70000		Tiempo de ejecucion: 11312
+Tamano Caso: 80000		Tiempo de ejecucion: 14735
+Tamano Caso: 90000		Tiempo de ejecucion: 16247
+Tamano Caso: 100000		Tiempo de ejecucion: 17868
