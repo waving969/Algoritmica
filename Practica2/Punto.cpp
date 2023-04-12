@@ -16,12 +16,16 @@ Punto::Punto(int semilla){
         k[i] = rand()%TAM;
     }
 
+    posibleDomidador = false ;
+
 }
 
 Punto::Punto(bool debug, int num){
     for(int i = 0; i < TAM; i++){
         k[i] = num;
     }
+
+    posibleDomidador = false;
 }
 
 Punto::Punto(){
@@ -32,6 +36,14 @@ Punto::Punto(){
 
 int Punto::getPrimerPunto(){
     return k[0];
+}
+
+void Punto::setDominador(bool _posibleDominador){
+    posibleDomidador = _posibleDominador;
+}
+
+bool Punto::getDominador(){
+    return posibleDomidador;
 }
 
 void Punto::mostrarCoordenadas(){
