@@ -3,10 +3,16 @@
 #include <cstring> // Para usar memcpy
 #include <iostream>
 #include <fstream> // Para usar ficheros
-#include<vector>
+#include <vector>
 #include "Punto.hpp"
 
 using namespace std;
+
+bool estaEnLista(int pos, int *indices, int tam);
+bool domina(Punto p1, Punto p2);
+void algoritmoFuerzaBruta(Punto *PuntosFuertes, int &auxPuntosFuertes, Punto *vector_puntos, int n);
+int menu(bool &debug);
+
 
 int main(int argc, char *argv[]){
     Punto *vector_puntos;
@@ -16,25 +22,30 @@ int main(int argc, char *argv[]){
 	double tejecucion; // tiempo de ejecucion del algoritmo en ms
 	unsigned long int semilla;
 	ofstream fsalida;
+    ofstream fsalida2;
+    bool debug;
 
-    if (argc <= 3) {
+    if (argc <= 4) {
 		cerr<<"\nError: El programa se debe ejecutar de la siguiente forma.\n\n";
-		cerr<<argv[0]<<" NombreFicheroSalida Semilla tamCaso1 tamCaso2 ... tamCasoN\n\n";
+		cerr<<argv[0]<<" NombreFicheroSalida NombreFicheroSalida2 Semilla tamCaso1 tamCaso2 ... tamCasoN\n\n";
 		return 0;
 	}
 
     // Abrimos fichero de salida
 	fsalida.open(argv[1]);
+    fsalida2.open(argv[2]);
 	if (!fsalida.is_open()) {
 		cerr<<"Error: No se pudo abrir fichero para escritura "<<argv[1]<<"\n\n";
 		return 0;
 	}
 
     // Inicializamos generador de no. aleatorios
-	semilla= atoi(argv[2]);
+	semilla= atoi(argv[3]);
+
+    int opcion = menu(debug);
 
     // Pasamos por cada tamaÒo de caso
-	for (argumento= 3; argumento<argc; argumento++) {
+	for (argumento= 4; argumento<argc; argumento++) {
 		
 		// Cogemos el tamanio del caso
 		n= atoi(argv[argumento]);
@@ -53,8 +64,6 @@ int main(int argc, char *argv[]){
 
         int coordenadas[TAM];
 
-        //Punto puntoFuerte (true, 9);
-        //vector_puntos[n-1] = puntoFuerte;
         for(int i =0 ; i < n; i++){
             fsalida << "Punto " << i << " :" << endl;
             fsalida << vector_puntos[i].to_string();
@@ -62,46 +71,124 @@ int main(int argc, char *argv[]){
             fsalida << endl << endl;
         }
 
-        //tenemos que comparar las coordenadas con getK
-        int indicePuntoFuerte[n];
-        int auxIndicePuntoFuerte = 0;
+        
+        cout << "Debug "<< debug << endl;
         Punto *PuntosFuertes;
         PuntosFuertes = new Punto[n];
+        if(debug){
+            Punto puntoDebug(debug,9);
+            vector_puntos[n-1] = puntoDebug;
+        }
         int auxPuntosFuertes = 0;
-        int auxDomina = 0;
-        bool noDominante = false;
-        bool encontrados = false;
-
-        cout << "Salida " << endl;
-        for(int i = 0; i < n; i++){
-            for(int j = 0; j < n ;j++){
-                if(vector_puntos[i].getK(i)>=vector_puntos[j].getK(j)){
-                    
-                        PuntosFuertes[auxPuntosFuertes] = vector_puntos[i];
-                        auxPuntosFuertes++;
-                }
-            }
+        t0= std::chrono::high_resolution_clock::now();
+        switch (opcion)
+        {
+        case 1:
+            algoritmoFuerzaBruta(PuntosFuertes, auxPuntosFuertes, vector_puntos, n);
+            break;
+        case 2: 
+            
+            break;
+        case 3: 
+            
+            break;
+        default:
+            cerr << "Salida " << endl;
+            break;
         }
-
-        //Posible punto fuerte
-        PuntosFuertes[auxPuntosFuertes] = vector_puntos[i]; 
-        auxPuntosFuertes++;
-        int i = 0;
-        while(!encontrados){
-            for(int j=0; i<n; i++){
-
-           }
-        }
-        
+        tf= std::chrono::high_resolution_clock::now();
+        unsigned long tejecucion= std::chrono::duration_cast<std::chrono::microseconds>(tf - t0).count();
+        cerr << "\tTiempo de ejec. (us): " << tejecucion << " para tam. caso "<< n_original<<endl;
     
         cout << "Numero de puntos dominantes: " << auxPuntosFuertes << endl << endl;
-         for(int i = 0; i < auxPuntosFuertes; i++){
-           cout << "Punto Fuerte: " << PuntosFuertes[i].to_string() << endl;
-         }
+        for(int i = 0; i < auxPuntosFuertes; i++){
+           fsalida2 << "Punto Fuerte: " << PuntosFuertes[i].to_string() << endl;
+        }
+
         delete[] vector_puntos;
         delete [] PuntosFuertes;
+    }         
+}
+
+
+int menu(bool &debug){
+    int opcion;
+    int a;
+    cout << "Elija la opcion que desee: " 
+        << endl << "\t1: Para ejecutar algoritmoFuerzaBruta "
+        << endl << "\t2: Para ejecutar implementacion1 DyV" 
+        << endl << "\t3: Para ejecutar implementacion2 DyV" << endl; 
+    cin>>opcion;
+
+    switch (opcion)
+    {
+    case 1:
+        cout << "\nAlgoritmoFuerzaBruta\n" << endl;
+        opcion = 1;
+        break;
+    case 2:
+        cout << "\nimplementacion1 DyV\n"<< endl;
+        opcion = 2;
+        break;
+    case 3: 
+        cout << "\nimplementacion2 DyV\n"<< endl; 
+        opcion = 3;
+        break;
+    default:
+        cerr<<"\nError: debe seleccionar un valor valido entre 1-5";
+        return 0;
+        break;
     }
 
+    cout << "¿Deseas activar el debug? \n\t1.-no\n\t2.-Si" << endl;
+    cin >> a;
 
-            
+    if(a == 1)
+        debug = false;
+    else 
+        debug = true;
+
+    return opcion;
+}
+
+
+bool domina(Punto p1, Punto p2) {
+    bool domina = false;
+    for (int i = 0; i < TAM; i++) {
+        if (p1.getK(i) < p2.getK(i)) {
+            return false;
+        }
+        else if (p1.getK(i) > p2.getK(i)) {
+            domina = true;
+        }
+    }
+    return domina;
+}
+
+
+bool estaEnLista(int pos, int *indices, int tam){
+        for(int i = 0; i < tam; i++){
+            if(pos == indices[i]){
+                //cout << "esta dentro de la lista " << endl;
+                return true;
+            }
+        }
+        //cout << "No esta en la lista " << endl;
+        return false;
+    }
+
+void algoritmoFuerzaBruta(Punto *PuntosFuertes, int &auxPuntosFuertes, Punto *vector_puntos, int n){
+    for(int i = 0; i < n; i++){
+        bool esDominado = false;
+        for(int j = 0; j < n; j++){
+            if(vector_puntos[j].dominaPunto(vector_puntos[i])){
+                esDominado = true;
+                break; 
+            }
+        }
+        if(!esDominado){
+             PuntosFuertes[auxPuntosFuertes] = vector_puntos[i];
+            auxPuntosFuertes++;
+        }
+    }
 }

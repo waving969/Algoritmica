@@ -49,17 +49,16 @@ int Punto::getOcupados(){
 }
 
 bool Punto::dominaPunto(Punto otroPunto){
-    bool noDomina = false;
-    cout << "hola "<< endl;
-    for(int i = 0; i < TAM && !noDomina; i++){
-        cout << "hola"<<endl;
-        if(this->getK(i) >= otroPunto.getK(i))
-            noDomina = true;
-
-        if(noDomina)
-            cout << "Domina en coordenada "<< i << endl;
+    bool domina = false;
+    for(int i = 0; i < TAM; i++){
+        if(this->getK(i) > otroPunto.getK(i))
+            domina = true;
+        else if(this->getK(i) < otroPunto.getK(i)){
+            domina = false;
+            break;
+        }
     }
-    return noDomina;
+    return domina;
 }
 
 bool Punto::dominaPunto2(Punto otroPunto){
@@ -68,6 +67,7 @@ bool Punto::dominaPunto2(Punto otroPunto){
     for(int i = 0; i < TAM && noDomina; i++){
         if(this->getK(i) <= otroPunto.getK(i)){
             noDomina = false;
+        
         }else{
             noDomina = true;
         }
