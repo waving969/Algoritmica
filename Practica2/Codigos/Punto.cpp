@@ -70,6 +70,7 @@ bool Punto::dominaPunto(Punto otroPunto){
             break;
         }
     }
+
     return domina;
 }
 
