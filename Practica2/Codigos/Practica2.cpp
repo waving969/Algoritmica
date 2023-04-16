@@ -16,6 +16,26 @@ int menu(bool &debug);
 vector<Punto> algoritmoDyV(vector<Punto>& vector_puntos);
 vector<Punto> algoritmoDyV2(vector<Punto>& vector_puntos);
 vector<Punto> fusiona(vector<Punto>& izda, vector<Punto>& dcha);
+
+template <typename T>
+std::vector<T> operator+(const std::vector<T>& A, const std::vector<T>& B)
+{
+    std::vector<T> AB;
+    AB.reserve( A.size() + B.size() );
+    AB.insert( AB.end(), A.begin(), A.end() );        
+    AB.insert( AB.end(), B.begin(), B.end() );        
+    return AB;
+}
+
+template <typename T>
+std::vector<T>& operator+=(std::vector<T>& A, const std::vector<T>& B)
+{
+    A.reserve( A.size() + B.size() );                
+    A.insert( A.end(), B.begin(), B.end() ); 
+    return A;
+}
+
+
 int main(int argc, char *argv[]){
     vector<Punto> vector_puntos;
     //vector<Punto> vector_puntos;
@@ -101,12 +121,13 @@ int main(int argc, char *argv[]){
         }
         tf= std::chrono::high_resolution_clock::now();
         unsigned long tejecucion= std::chrono::duration_cast<std::chrono::microseconds>(tf - t0).count();
+        
         cerr << "\tTiempo de ejec. (us): " << tejecucion << " para tam. caso "<< n_original<<endl;
-    
         cout << "Numero de puntos dominantes: " << PuntosFuertes.size() << endl << endl;
         for(int i = 0; i <PuntosFuertes.size(); i++){
            fsalida2 << "Punto Fuerte: " << PuntosFuertes[i].to_string() << endl;
         }
+       
     }         
 }
 
@@ -188,7 +209,6 @@ vector<Punto> algoritmoFuerzaBruta(vector<Punto>& vector_puntos){
         }
         if(!esDominado){
             PuntosFuertes.push_back(vector_puntos[i]);
-
         }
     }
     return PuntosFuertes;
@@ -199,29 +219,24 @@ vector<Punto> algoritmoDyV(vector<Punto>& vector_puntos){
         return vector_puntos;
     }
     
-
     int mid = vector_puntos.size()/2;
     
     vector<Punto> izq(vector_puntos.begin(), vector_puntos.begin() + mid);
     vector<Punto> der(vector_puntos.begin() + mid, vector_puntos.end());
-
-    
-
-    
-    izq = algoritmoDyV(izq);
-    
+  
+    izq = algoritmoDyV(izq);  
     der = algoritmoDyV(der);
-    //cout << "Antes" << endl;
+
    
+     //IMPLEMENTACION 2 POSIBLE
     vector<Punto> puntosFuertes = fusiona(izq,der);
-    vector<Punto> puntos = algoritmoFuerzaBruta(puntosFuertes);
-   
-    return puntos; 
+    
+    return puntosFuertes;
 }
 
 
 vector<Punto> fusiona(vector<Punto>& izda, vector<Punto>& dcha){
-    vector<Punto> resultado;   
+    vector<Punto> resultado;  
     int i = 0;
     int j = 0; 
     while (i<izda.size() && j<dcha.size()){
@@ -229,6 +244,45 @@ vector<Punto> fusiona(vector<Punto>& izda, vector<Punto>& dcha){
             resultado.push_back(izda[i++]);
         }else{
            resultado.push_back(dcha[j++]);
+        }
+    }
+
+    while(i<izda.size()){
+       resultado.push_back(izda[i++]);
+    } 
+    while(j<dcha.size()){
+        resultado.push_back(dcha[j++]);
+    }
+
+    //Borrar si mal
+    vector<Punto> puntos;
+    for(int i = 0; i < resultado.size(); i++){
+        bool esDominado = false;
+        for(int j = 0; j < resultado.size(); j++){
+            if(resultado[j].dominaPunto(resultado[i])){
+                esDominado = true;
+                break; 
+            }
+        }
+        if(!esDominado){
+            puntos.push_back(resultado[i]);
+
+        }
+    }
+
+    return resultado;
+    
+}
+
+vector<Punto> fusiona2(vector<Punto>& izda, vector<Punto>& dcha){
+    vector<Punto> resultado;  
+    int i = 0;
+    int j = 0; 
+    while (i<izda.size() && j<dcha.size()){
+        if(!izda[i].dominaPunto(dcha[j])){
+            resultado.push_back(izda[i++]);
+        }else{
+            resultado.push_back(dcha[j++]);
         }
     }
 
@@ -263,28 +317,37 @@ vector<Punto> algoritmoDyV2(vector<Punto>& vector_puntos){
     der = algoritmoDyV2(der);
     //cout << "Antes" << endl;
    
-    vector<Punto> puntosFuertes = fusiona(izq,der);
+    vector<Punto> puntosFuertes = fusiona2(izq,der);
 
     //cout << puntosFuertes[0].to_string() << endl;
     
 
-    for(int i = 0; i < puntosFuertes.size(); i++){
+    /*for(int i = 0; i < puntosFuertes.size(); i++){
         for (int j = i+1; j < puntosFuertes.size(); j++){
             puntosFuertes[i].setDominador(puntosFuertes[i].dominaPunto(puntosFuertes[j]));
             if(puntosFuertes[i].getDominador())
                 break;
         }
-    }
+    }*/
 
     // Filter out dominated points
     vector<Punto> noDominado;
-    for (int i = 0; i < puntosFuertes.size(); i++) {
-        if (puntosFuertes[i].getDominador()) {
+    
+    for(int i = puntosFuertes.size(); i>0; i++){
+        if(!puntosFuertes[i].dominaPunto(puntosFuertes[i-1]))
             noDominado.push_back(puntosFuertes[i]);
-        }
     }
-   
     return  noDominado;
 
 
+}
+
+vector<Punto> algoritmoDyV3(vector<Punto> &vector_puntos, int inicio, int fin){
+    if(inicio == fin){
+        vector<Punto> resultado; 
+        resultado.push_back(vector_puntos[inicio]); 
+        return resultado;
+    }
+
+    
 }
