@@ -64,5 +64,6 @@ int main() {
         }
         cout << endl;
     }
+    cout << "Fin del algoritmo " << endl;
     return 0;
 }
