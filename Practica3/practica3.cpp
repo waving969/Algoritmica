@@ -29,6 +29,7 @@ vector<int> caminoDeEuler(vector<vector<int>>& grafo) {
             camino.push_back(nodoActual);
             nodoActual = pila.back();
             pila.pop_back();
+            
         } else {
             int siguienteNodo = grafo[nodoActual].back();
             grafo[nodoActual].pop_back();
@@ -47,11 +48,13 @@ vector<int> caminoDeEuler(vector<vector<int>>& grafo) {
     return camino;
 }
 
+
 // Ejemplo de uso
 int main() {
     // Grafo de ejemplo con 4 nodos y 5 aristas
-    vector<vector<int>> grafo = {{1, 2}, {0, 2, 3}, {0, 1, 3}, {1, 2}};
-    vector<int> camino = caminoDeEuler(grafo);
+    vector<vector<int>> grafo = {{1,2}, {0,2,3,4}, {0,1,3,4}, {1,2,4,5}, {1,2,3,5}, {3,4}};
+    vector<vector<int>> grafo2 = {{1,2},{0,3},{0,3},{1,2}};
+    vector<int> camino = caminoDeEuler(grafo2);
     if (camino.size() == 0) {
         cout << "El grafo no es Euleriano" << endl;
     } else {
