@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
+#include <chrono>
 #include <sstream>
 #include <algorithm>
 using namespace std;
@@ -8,7 +9,7 @@ using namespace std;
 string menu(){
     string devolver = "F";
     int menu;
-    cout<< "Implementacion Practica3 \nSeleccion del grafo:\n \t1.- Grafo prueba\n\t2.- Grafo 1\n\t3.- Grafo 2\n" << endl;
+    cout<< "Implementacion Practica3 \nSeleccion del grafo:\n \t1.- Grafo prueba\n\t2.- Grafo 1\n\t3.- Grafo 2\n\t4.- Grafo no euleriano\n\t5.- Grafo 3\n" << endl;
     cin >> menu;
 
     switch (menu)
@@ -21,6 +22,12 @@ string menu(){
         break;
     case 3:
         devolver = "./Grafo2.txt"; 
+        break;
+    case 4: 
+        devolver = "./GrafoNoEuleriano.txt"; 
+        break;
+    case 5: 
+        devolver = "./grafo3.txt"; 
         break;
     
     }
