@@ -65,13 +65,30 @@ bool esEuleriano(vector<vector<int>>& grafo) {
     return true;
 }
 
+int heuristicaGreedy(vector<vector<int>> &grafo, int nodo){
+    //cout << "tamanio nodo " << nodo <<  " aristas: " << grafo[nodo].size();
+    int masPrometedor = 0;
+    int posmasPrometedor = 0;
+    for (int i = 0; i < grafo[nodo].size(); i++){
+        if(grafo[].size() >= masPrometedor){
+            masPrometedor = grafo[i].size();
+            posmasPrometedor = i;
+        }
+    }
+
+    return posmasPrometedor;
+}
+
 // Función que realiza el recorrido de Euler
 void fleury(vector<vector<int>>& grafo, vector<int>& camino, int v) { 
     while (!grafo[v].empty()) {
-        int w = grafo[v][0];  // Selecciona el primer vecino de v
-        grafo[v].erase(grafo[v].begin());  // Elimina la arista (v,w) del grafo
+        int w = heuristicaGreedy(grafo, v);
+        //int w = grafo[v][0];  // Selecciona el primer vecino de v
+        cout << "Borrando arista prometedora " << w;
+        grafo[v].erase(grafo[v].begin() + w);  // Elimina la arista (v,w) del grafo
         for (int i = 0; i < grafo[w].size(); i++) {
             if (grafo[w][i] == v) {  // Elimina la arista (w,v) del grafo
+            cout << " Borrando " << i << " De nodo " << w <<  endl;
                 grafo[w].erase(grafo[w].begin() + i);
                 break;
             }
@@ -84,6 +101,8 @@ void fleury(vector<vector<int>>& grafo, vector<int>& camino, int v) {
 int main() {
     vector<vector<int>> grafo = LeerFichero(menu());
 
+    int prueba = heuristicaGreedy(grafo, 0);
+
     if(esEuleriano(grafo)){
         vector<int> camino;
         fleury(grafo, camino, 0);
@@ -95,7 +114,7 @@ int main() {
         cout << "El grafo dado no es euleriano "<< endl;
     }
 
-
+    
     return 0;
 }
 
