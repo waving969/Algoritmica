@@ -8,7 +8,7 @@
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/Practica3/Entrega/Codigo/Prueba.exe",
+            "program": "${workspaceFolder}/Practica4/newp4.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
