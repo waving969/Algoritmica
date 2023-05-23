@@ -74,7 +74,7 @@ bool esEuleriano(vector<vector<int>>& grafo) {
 }
 
 int heuristicaGreedy(vector<vector<int>>& grafo, int v) {
-    // Elige el vecino con el menor número de aristas adyacentes
+    // Elige el vecino con el mayor número de aristas adyacentes
     int minVecino = grafo[v][0];
     int minAristas = grafo[grafo[v][0]].size();
 
@@ -95,11 +95,11 @@ int heuristicaGreedy(vector<vector<int>>& grafo, int v) {
 void fleury(vector<vector<int>>& grafo, vector<int>& camino, int v) { 
     while (!grafo[v].empty()) {
         int w = heuristicaGreedy(grafo, v);
-        //cout << "Borrando arista prometedora " << w;
+       
         grafo[v].erase(grafo[v].begin());  // Elimina la arista (v,w) del grafo
         for (size_t i = 0; i < grafo[w].size(); i++) {
             if (grafo[w][i] == v) {  // Elimina la arista (w,v) del grafo
-                //cout << " Borrando " << i << " De nodo " << w <<  endl;
+               
                 grafo[w].erase(grafo[w].begin() + i);
                 break;
             }
