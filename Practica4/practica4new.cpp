@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <set>
+#include <tuple>
 
 using namespace std; 
 
@@ -9,13 +10,13 @@ class Empresa{
 private: 
     string nombre;
     int acciones; 
-    int precioPorAccion; 
-    int beneficioPorAccion; 
+    double precioPorAccion; 
+    double beneficioPorAccion; 
     double comisionPorOperacion;
 
     
 public: 
-    int accionXbeneficioXcomision;
+    double accionXbeneficioXcomision;
     Empresa(){
         this->nombre = " ";
         this->acciones = 0;
@@ -24,14 +25,14 @@ public:
         this->comisionPorOperacion = 0;
     }
 
-    Empresa(string nombre,int acciones, int precio, int beneficio, double comision){
+    Empresa(string nombre,int acciones, double precio, double beneficio, double comision){
         this->nombre = nombre;
         this->acciones = acciones; 
         this->precioPorAccion = precio; 
-        this->beneficioPorAccion = beneficio; 
+        this->beneficioPorAccion = beneficio/100; 
         this->comisionPorOperacion = comision / 100;
 
-        this->accionXbeneficioXcomision = (precio * beneficio) - (precio*comision);
+        this->accionXbeneficioXcomision = (precio * beneficioPorAccion) - (precio*comisionPorOperacion);
     }
 
     string getNombre(){
@@ -41,24 +42,28 @@ public:
         return this->acciones;
     }
 
-    int getPrecio(){
+    double getPrecio(){
         return this->precioPorAccion;
     }
 
-    int getBeneficios(){
+    double getBeneficios(){
         return this->beneficioPorAccion;
     }
     
     //La comision corresponde con el % del precio de las acciones ???
-    int getComision(){
+    double getComision(){
         return this->comisionPorOperacion;
     }
 
-    int estimacionPosibleBeneficio(){
+    double getaccionXbeneficioXcomision(){
+        return this->accionXbeneficioXcomision;
+    }
+
+    double estimacionPosibleBeneficio(){
         return (this->precioPorAccion*this->beneficioPorAccion);
     }
 
-    int precioComision(int numAcciones){
+    double precioComision(int numAcciones){
         if(numAcciones < this->acciones){
             return getComision() * numAcciones;
         }
@@ -114,8 +119,11 @@ bool operator<(const Empresa& a, const Empresa& n) {
     4.- Si no se puede comprar una accion, comprobar las empresas restantes hasta quedarse sin dinero 
 */
 
-void algoritmoBasico(vector<Empresa> empresas, double dineroInicial){
-    //vector<tuple<Empresa, int>> devolver;
+
+//ARREGLAR DOUBLES NO FUNCIONAN
+
+vector<tuple<Empresa, int>> algoritmoBasico(vector<Empresa> empresas, double &dineroInicial){
+    vector<tuple<Empresa, int>> devolver;
     set<Empresa> listaEmpresasOrdenada;
 
     for(Empresa empresa: empresas){
@@ -130,7 +138,6 @@ void algoritmoBasico(vector<Empresa> empresas, double dineroInicial){
       
 
     for(auto it = listaEmpresasOrdenada.begin(); it != listaEmpresasOrdenada.end(); it++){
-        
         Empresa empresa = *it; 
         cout << "\nEmpresa: " << empresa.getNombre() << endl;
         int numAcciones = empresa.numeroMaximoAccionesPuedoComprar(dineroInicial);
@@ -138,22 +145,23 @@ void algoritmoBasico(vector<Empresa> empresas, double dineroInicial){
         empresa.compraAcciones(dineroInicial, numAcciones);
         cout << "Dinero despues de la compra " << dineroInicial << endl;
         cout << "Numero de acciones de la empresa: " << empresa.getAcciones() << endl;
+        devolver.push_back(make_tuple(empresa, numAcciones));
     }
 
 
    
-
+    return devolver;
 }
 
 
 
 int main(){
     double dinero = 100;
-    Empresa empresa1("Fruterias Loli", 10, 1, 5, 10);
-    Empresa empresa2("Bar Paco", 100, 20, 10, 10); 
-    Empresa empresa3("Chuches Paqui", 150,10,20,5);
-    Empresa empresa4("Car-Wash Asuncion", 20,5,2,10);
-    Empresa empresa5("Ferreteria Manolo",10,5,200,1);
+    Empresa empresa1("Fruterias Loli", 10, 1, 105.0, 10.0);
+    Empresa empresa2("Bar Paco", 100, 20, 110.0, 10.0); 
+    Empresa empresa3("Chuches Paqui", 150,10,120.0,5.0);
+    Empresa empresa4("Car-Wash Asuncion", 20,5,102.0,10.0);
+    Empresa empresa5("Ferreteria Manolo",10,5,200.0,1.0);
     vector<Empresa> vectorEmpresas;
     vectorEmpresas.push_back(empresa1);
     vectorEmpresas.push_back(empresa2);
@@ -168,12 +176,30 @@ int main(){
         cout << "Precio por accion: " << empresa.getPrecio() << endl;
         cout << "Beneficio por accion: " << empresa.getBeneficios() << endl;
         cout << "Comision por operacion: " << empresa.getComision() << endl;
+        cout << "Estimacion de la mejor empresa: " << empresa.getaccionXbeneficioXcomision() << endl;  
         cout << endl;
     }
     
     cout << "Algoritmo basico" << endl; 
 
-    algoritmoBasico(vectorEmpresas, dinero);
+    vector<tuple<Empresa, int>> solucion;
+    solucion = algoritmoBasico(vectorEmpresas, dinero);
+    double posibleBeneficio = 0;
+
+    cout << "\n\tNumero de acciones compradas: " << endl; 
+    for (const auto& it: solucion){
+        Empresa elemento1 = get<0>(it);
+        int elemento2 = get<1>(it); 
+
+        if(elemento2 != 0){
+            cout << "\nEmpresa: "<< elemento1.getNombre() << " \nAcciones Compradas: " << elemento2 << endl;
+            posibleBeneficio += elemento2 * elemento1.getBeneficios();
+            cout << "\nEmpresa, beneficio por accion: "<<elemento1.getBeneficios() << " * " << elemento2 << endl;
+        }
+    }
+
+    cout << "Dinero Final: "<< dinero << endl;
+    cout << "Posible Beneficio " << posibleBeneficio << endl;
 }
 /*
 int max_beneficio(const vector<Empresa>& empresas, int X) {
