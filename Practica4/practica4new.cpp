@@ -199,7 +199,7 @@ int main(){
     }
 
     cout << "Dinero Final: "<< dinero << endl;
-    cout << "Posible Beneficio " << posibleBeneficio << endl;
+    cout << "Posible Beneficio " << posibleBeneficio << endl; 
 }
 /*
 int max_beneficio(const vector<Empresa>& empresas, int X) {
