@@ -302,16 +302,34 @@ double ideaOriginal(std::vector<Empresa>& empresas, int capital) {
     return beneficios[numEmpresas][capital];
 }
 
+bool findOnTuple(vector<tuple<Empresa, int>>lista, int i, int j, vector<Empresa> empresas){
+    bool devolver = false; 
+    int tamLista = lista.size();
+
+    for(const auto it: lista){
+        Empresa elemento1 = get<0>(it);
+        int elemento2 = get<1>(it);
+        cout << "Comparando "<< elemento1.getNombre() << " con " << empresas[i].getNombre()<< endl;
+        cout << "Numero de acciones " << elemento2 << " con " << j << endl;
+
+        if(empresas[i].getNombre() == elemento1.getNombre() and elemento2 == j){
+            cout << "\tEncontrado similar " << endl;
+            return true;
+        }
+            
+    }
+
+    return devolver;
+}
+
+
 
 vector<tuple<Empresa, int>> ideaOriginal2(std::vector<Empresa>& empresas, double& capital) {
     int numEmpresas = empresas.size();
     double beneficios[empresas.size()][NUM_ACCIONES];
     vector<tuple<Empresa, int>> devolver;
-    vector<tuple<Empresa, int>> aux;
-    vector<int> empre;
-    int maxi = 0;
-    int maxj = 0;
-    double num= 0;
+    vector<Empresa> empre;
+    int max = 0;
     //Caso base 
     for (int i = 0; i < numEmpresas; i++){
         beneficios[i][0] = 0;
@@ -331,30 +349,68 @@ vector<tuple<Empresa, int>> ideaOriginal2(std::vector<Empresa>& empresas, double
         }
         cout << endl;
     }
-     for(int i = 0; i < numEmpresas; i++){
-        double maxBeneficio = 0;
-        for(int j = 1; j <= NUM_ACCIONES; j++){   
 
-            if(beneficios[i][j] > maxBeneficio){
-                aux.push_back(make_tuple(empresas[i], j));
-                maxBeneficio = beneficios[i][j];
-                break;
-            } 
+    
+    bool puedeComprar = true; 
+    int capital_aux = capital;
+    int aux_i;
+    int aux_j;
+    vector<tuple<Empresa, int>> listaCompra;
+    int contador = 0;
+
+    while(capital_aux > 0 and puedeComprar){
+        cout << "\nIteracion " << ++contador << endl;
+        max = 0;
+        for(int j = 1; j <= NUM_ACCIONES; j++){
+            for(int i = 0; i < numEmpresas; i++){
+                if(beneficios[i][j] > max and !findOnTuple(listaCompra, i, j, empresas)){
+                    //cout << "Mejor empresa " << empresas[i].getNombre() << endl;
+                    max = beneficios[i][j];
+                    aux_i = i;
+                    aux_j = j;
+                }
+            }
+            if(max != 0){
+                capital_aux -= empresas[aux_i].getPrecio()+empresas[aux_i].getComision();
+                if(capital_aux < 0){
+                    cout << "Se acabo el dinero"<< endl;
+                    puedeComprar = false;
+                    break;
+                }
+                //cout << "Compramos acciones de: " << empresas[aux_i].getNombre() << " Cantidad: " << aux_j << endl;
+                
+                    listaCompra.push_back(make_tuple(empresas[aux_i], aux_j));
+                
+            
+            }
+            
         }
     }
 
-    for (const auto& it: aux){
+    //Hacer lista para recorrer el vector de empresas y modificarlo 
+    cout << "\nLista de la compra: " << endl;
+    for(const auto &it: listaCompra){
         Empresa elemento1 = get<0>(it);
-        int elemento2 = get<1>(it); 
-        cout << "Empresa: " <<elemento1.getNombre() << endl; 
-        cout << "Accion: " <<elemento2 << endl; 
-
+        int elemento2 = get<1>(it);
+        cout << "\nNombre empresa: " << elemento1.getNombre() << endl;
+        cout << "DInero antes de la compra: " << capital << endl;
+        elemento1.compraAcciones(capital, 1);
+        cout << "Dinero despues de la compra " << capital << endl;
+        cout << "Numero de acciones de la empresa: " << elemento1.getAcciones() << endl;
     }
+            
+    
+    
+    
 
-
-
-    return devolver;
+    return listaCompra;
 }
+
+
+
+
+
+
 
 
 
