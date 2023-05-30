@@ -404,6 +404,21 @@ int main(){
     vectorEmpresas.push_back(empresa5);
     vectorEmpresas.push_back(empresa6);
     
+    
+   /* 
+    Empresa empresa1("Tejidos Manoli", NUM_ACCIONES, 15,110.0, 5.0);
+    Empresa empresa2("Joyeria Isidoro", NUM_ACCIONES, 10, 110.0, 2.0); 
+    Empresa empresa3("Polleria", NUM_ACCIONES,10,120.0,5.0);
+    Empresa empresa4("Car-Wash2", NUM_ACCIONES,10,120.0,10.0);
+    Empresa empresa5("Ferreteria2",NUM_ACCIONES,4,150.0,1.0);
+    Empresa empresa6("Academia2", NUM_ACCIONES, 1, 120, 5);
+    vector<Empresa> vectorEmpresas;
+    vectorEmpresas.push_back(empresa1);
+    vectorEmpresas.push_back(empresa2);
+    vectorEmpresas.push_back(empresa3);
+    vectorEmpresas.push_back(empresa4);
+    vectorEmpresas.push_back(empresa5);
+    vectorEmpresas.push_back(empresa6);    */
 
     /*for (Empresa empresa : vectorEmpresas) {
         cout << "Nombre: " << empresa.getNombre() << endl;
@@ -462,21 +477,3 @@ int main(){
 
     return 0;
 }
-/*
-int max_beneficio(const vector<Empresa>& empresas, int X) {
-    const int N = empresas.size();
-    vector<vector<int>> DP(N,) (N + 1, vector<int>(X + 1, 0));
-    
-    for (int i = 1; i <= N; ++i) {
-        for (int j = 1; j <= X; ++j) {
-            DP[i][j] = DP[i - 1][j];  // No comprar acciones de la empresa i
-            for (int k = 1; k <= empresas[i - 1].a; ++k) {
-                if (j >= k * empresas[i - 1].p + empresas[i - 1].c) {
-                    DP[i][j] = max(DP[i][j], DP[i - 1][j - k * empresas[i - 1].p - empresas[i - 1].c] + k * empresas[i - 1].b);
-                }
-            }
-        }
-    }
-    
-    return DP[N][X];
-}*/
