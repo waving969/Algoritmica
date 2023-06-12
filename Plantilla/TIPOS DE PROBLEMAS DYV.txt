@@ -1,0 +1,116 @@
+TIPOS DE PROBLEMAS DYV
+
+//Tipo 1: 
+Busqueda de un elemento en un vector ordenado
+
+Algoritmo Busqueda Binaria
+    Idea General: 
+        Como el vector esta ordenado, al comprobar el elemento central, si el elemento que buscamos es menor que el elemento
+        central, podemos descartar la mitad derecha, en caso contrario descartaremos la mitad derecha 
+
+    Division en subproblemas: 
+        Podemos dividir el problema en uno de tamaño N/2. Siempre que dividamos el problema por el elemento central
+    
+    Resolucion de cada Subproblema: 
+        - Si el elemento central del vector contiene el elemento requerido, devuelve el indice
+        - Si el elemento X que buscamos es menor al elemento central, se reduce la busqueda al vector de [0..mitad-1]
+        - Si el elemento X que buscamos es mayor al elemento central, se reduce la busqueda al vector de [mitad+1..N]
+        - No hace falta combinar soluciones puesto que se trata de ir acotando el problema hasta dar con el elemento 
+
+    Caso Base: 
+        El algoritmo para la recursividad cuando el vector tenga tamaño 0; es decir que no se haya encontrado solucion o
+        cuando se encuentra el valor X 
+
+    Diseño: 
+        Algoritmo S = BB(V,ini,fin, elemento)
+            Si ini > fin 
+                Devolver S = "No hay solucion"
+            En otro caso, hacer: 
+                centro = (ini+fin)/2
+                Si v[centro] == elemento    
+                    Devolver S = centro
+                En otro caso 
+                    Si elemento < v[centro] 
+                        Devolver S = BB(V, ini, centro-1, elemento)
+                    Si elemento > v[centro]
+                        Devolver S = BB(V,centro+1, fin, elemento)
+
+//Tipo 2: 
+Ordenar un vector de N componentes
+
+Algoritmo MergeSort
+    idea General: 
+        el algoritmo Mergesort se divide en etapas de división, 
+        ordenamiento y combinación de sublistas hasta obtener la lista finalmente ordenada.
+
+    Division en subproblemas: 
+        - Se divide el vector en 2 partes 
+        - Se sigue dividiendo el vector hasta llegar al caso base 
+        - Se resuelve cada parte por separado 
+        - Se combinan las soluciones 
+        - Se devuelve la solucion a la llamada recursiva anterior 
+        
+    Resolucion de cada subproblema y combinacion: 
+        - Hay dos indices, uno al comienzo de cada subvector
+        - Se comprueba que subvector tiene el elemento menor 
+        - Se inserta dicho elemento y se actualiza el indice afectado
+        - Al terminar un subvector, se copia dentro del otro subvector a la salida
+
+    Caso Base: 
+        El caso base de este problema se dará cuando tengamos dos elementos a comparar  
+    
+    Diseño: 
+        Algoritmo S = MergeSort(T[ini..fin])
+            Inicializamos mitad         //Es el elemento de tipo entero que nos divide la lista por la mitad
+            Inicializamos U             //Corresponde con la mitad i<quieda del vector T
+            Inicializamos V             //Corresponde con la mitad derecha del vector T 
+            Si ini distinto de fin      //Hay mas de dos elementos
+                mitad = (ini+fin)/2     //Descomposicion en subproblemas 
+                U = MergeSort(T[ini..mitad])
+                V = MergeSort(T[mitad+1..fin])
+                T = Mezcla(U,V) //Combinacion de las dos subsoluciones
+            Devolver T
+
+        Algoritmo T = Mezcla(U[0..j], V[0..k])
+            inicializamos las variables auxiliares l, m = 0     //Estas seran contadores para los vectores
+            Inicializamos un contador para el tamaño del vector a devolver llamada pos
+            Para pos = 0 hsata pos == j+k
+                Si U[l] < V[m]
+                    T[pos] = U[l]
+                    incrementamos en 1 la variable l
+                En otro caso
+                    T[pos] = V[m]
+                    Incrementamos en 1 la variable m
+                
+            Devolver T
+
+//Tipo 3: 
+QUICKSORT solo diseño 
+    Algoritmo S= QuickSort(V,ini,fin)
+        SI ini >= fin  //Caso Base
+            DEVOLVER S = vacio; 
+        FIN-SI
+        EN OTRO CASO:
+            [PosPivote,V] = Pivotar(V,ini,fin)
+            V = QuickSort(V,ini,PosPivote)
+            V = QuickSort(V,PosPivote+1,fin)
+        FIN-EN OTRO CASO
+    DEVOLVER V
+    
+     Algoritmo [PosPivote,V] = Pivotar(V,ini,fin)
+        Pivote = V[ini]
+        i = ini+1
+        j = fin
+        MIENTRAS i <= j:
+            Intercambiar V[i] y V[j]
+            MIENTRAS V[i] < Pivote y i <=j:
+                i = i+1
+            FIN-MIENTRAS
+            MIENTRAS V[j] >= Pivote y i <=j:
+                j=j-1
+            FIN-MIENTRAS
+        FIN-MIENTRAS
+        SI ini < j:
+            Intercambiar V[i] y V[j]
+        FIN-SI
+        DEVOLVER [j,V]

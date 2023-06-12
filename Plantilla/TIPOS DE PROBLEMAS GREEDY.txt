@@ -1,0 +1,124 @@
+TIPOS DE PROBLEMAS GREEDY
+
+Tipo1:
+//Si necesito encontrar el camino min entre todos los nodos de un arbol conexo
+Utilizo Kruskal -> costeMin 
+   Idea General: 
+        Tenemos que generar un arbol generador minimal que contenga todos los nodos del grafo sin tener ciclos
+        
+    Diseño de componentes: 
+        -Conjunto de candidatos C: Las distintas aristas del grafo
+        -Conjunto de candidatos utilizados: El conjunto de nodos que han sido seleccionados del grafo original y no hayan sido añadidos a la solucion
+        
+        -Funcion solucion: Los nodos utilizado cuyas aristas unen todos los nodos del grafo sin formar ciclos
+        -Criterio factibilidad: Seleccionar aquella arista que no genere ciclos
+        -Funcion seleccion: Seleccionar la arista que sea de menor coste del conjunto de candidatos
+        -Funcion objetivo: Minimizar la suma de los pesos de las aristas de los nodos seleccionados
+
+    Esquema del algoritmo: 
+        - Partimos de una lista de candidatos que serán los vertices del grafo que forman los posibles caminos Solucion(inicializada inicialmente a null)
+        - Añadimos todos los costes de las aristas o arcos al conjunto de candidatos y ordenamos dicho conjunto de elementos
+        - De la lista de candidatos que hemos podido identificar hasta el momento, cogemos el candidato de menor coste con la funcion de seleccion
+        - Vemos si dicho candidato cumple con las condiciones de factibilidad; es decir que no genere ciclos; la funcion factible me aceptara una arista de 
+          menor coste que una de las dos componentes conexas, garantizando asi que no se formen ciclos, posteriormente eliminamos dicha arista, quedandonos con
+          una componente conexa menos, formando un arbol generador minimal
+        - Una vez seleccionado el candidato, se borra de la lista de candidatos ya que se trata de un algoritmo Greedy y no podemos volver a contemplar un nodo como posible solucion
+        - Evaluamos la funcion solucion. Si no hemos terminado, seleccionamos otro candidato 
+
+    Diseño: 
+        Algoritmo T=Kruskal(Grafo G(V,A))
+            
+            N = numero de vertices de G
+            T = null // Vector solucion
+            C = Las aristas de del grafo
+
+            ordenar(C) //Ordenamos el conjunto C de aristas en orden creciente
+            Repetir Hasta numero de aristas en T sea igual a N-1
+                a = La arista mas corta del conjunto de candidatos // Al estar ordenadas seleccionamos la siguiente
+                a = siguiente elemento de C    //La arista mas corta del conjunto de candidatos al estar ordenadas seleccionamos la siguiente
+                Quitamos a de la lista de candidatos
+                SI al meter a en T no forma ciclos entonces:
+                    Añadimos a al conjunto Solucion T
+                FIN-SI
+            FIN-REPETIR
+            DEVOLVER T
+
+
+        Algoritmo S=Kruskal(Grafo G(V,A), int inicio){
+            set<arcos> C(A)
+            set<arcos> S;
+            
+            ordenar(C)  //Con el algoritmo de ordenacion que querramos
+            while(!C.empty() && S.size() != v.size()-1){
+                arcos x = c.first
+                C.erase(x); 
+                if(!HayCiclos(S,x))
+                    S.insert(x)
+            }
+            return S
+        }
+            
+
+Tipo2:
+    //Si necesito encontrar el camino min entre un nodo Inicio y un nodo Fin 
+    Utlizo Dijkstra -> costeCaminoMin
+
+    Idea General: 
+        Tenemos que recorrer desde un nodo Inicial hasta un nodo Final y debemos de encontrar el camino
+        minimo entre los dos nodos, Para hacerlo con una estructura Greedy no podemos volver hacia atras 
+        una vez que hayamos seleccionado un nodo, por lo tanto se basa en siempre escoger la arista adyacente
+        de menor coste
+    
+    Diseño de componentes: 
+        -Conjunto de candidatos C: Los distintos nodos del grafo
+        -Conjunto de candidatos utilizados: los nodos insertados o descartados del conjunto de C
+        
+        -Funcion solucion: Cuando se ha llegado al nodo final 
+        -Criterio factibilidad: Siempre es factible añadir un nodo a la solucion por que gracias a la funcion de
+                                 seleccion nos aseguramos que sea factible 
+        -Funcion seleccion: Seleccionar siempre la arista adyacente de menor coste 
+        -Funcion objetivo: Devolver el coste del camino minimo
+        
+    Esquema del algoritmo:   
+        - Partimos de una lista de candidatos que serán los vertices del grafo que forman los posibles caminos Solucion(inicializada inicialmente a null)
+        - Añadimos el nodo inicial a la lista solucion S y añadimos a la lista de candidatos C (inicialmente inicializada a null) los nodos adyacentes del
+          nodo actual
+        - De la lista de candidatos que hemos podido identificar hasta el momento, cogemos el candidato de menor coste con la funcion de seleccion
+        - Vemos si dicho candidato cumple con las condiciones de factibilidad, en nuestro caso como hemos dicho anteriormente todos los candidatos que sean seleccionados
+          cumplen con la condicion de ser factibles para nuestro algoritmo
+        - Una vez seleccionado el candidato, se borra de la lista de candidatos ya que se trata de un algoritmo Greedy y no podemos volver a contemplar un nodo como posible solucion
+        - Evaluamos la funcion solucion. Si no hemos terminado, seleccionamos otro candidato 
+        
+    Diseño:
+        Algoritmo[S, coste]=Dijkstra(Grafo G(v,a),ini, fin) //Este algoritmo devuelve una dupla, con la distancia del nodo ini al nodo fin y el camino
+            S es un vector con el camino de menor coste de la solucion
+            n = numero de vertices del grafo
+            C = null //Inicializamos la lista de candidatos a 0
+            v = ini // Lo usaremos como un elemento de C 
+            Para i = 0
+                Inicializamos coste como el peso de un nodo a otro siendo este peso el peso de la arista, en caso de no haber arista que una un nodo con otro se pondra un infinito
+                Inicializamos S como un conjunto vacio 
+            Hasta n
+            Repetir HASTA QUE v == fin:     //Criterio de parada (Funcion Solucion)
+                C // Actualizamos la lista de candidatos con los nodos adayacentes de v
+                v = Actualizamos con el candidato con el coste minimo //Funcion seleccion
+                Vaciamos el conjunto de candidatos C
+                Para cada nodo w en C hacer: // w es un iterador
+                    SI: coste[w] (coste para ir al nodo w)  es mayor que coste[v] + el peso hasta llegar al nodo solucion
+                        Actualizamos el coste para llegar al nodo w por coste[v] + el peso hasta llegar al nodo solucion // Es decir en vez de ir por ese nodo hemos encontrado una ruta alternativa que tiene menor coste
+                        Actualizamos S con el nodo v del grafo // Es decir que es mejor ir por v que por w
+                    FIN-SI
+                FIN-PARA
+            FIN-REPETIR
+        DEVOLVER S, coste
+
+    Ejemplo:
+        Dibujar un ejemplo sencillo si hay tiempo
+
+    
+                    
+
+    
+    
+
+
