@@ -1,0 +1,147 @@
+TIPOS DE PROBLEMAS PD
+
+//tipo 1: 
+Problema de los Play-Offs
+    Enunciado: En una competición juegan dos equipos A y B. El primero que gane un total de n partidas gana el torneo. Sabiendo que p es la
+            probabilidad de que A gane un partido y asumiendo que no puede haber empates (por tanto, 1-p es la probabilidad de que gane B),
+            se desea saber con qué probabilidad ganará el equipo A antes de que se juegue ningún partido.
+    Idea General:
+            Sea P(i,j) la probabilidad de que A gane cuando a A le quedan i victorias pendientes y a B le quedan j. Entonces:
+                P(0, j)= 1
+                P(i, 0)= 0
+                P(n, n) es lo que queremos saber
+                P(0, 0) no está definido.
+    Pseudocodigo:
+        Función PlayOffsPD(n, p)
+            T= Tabla de tamaño [0..n][0..n]
+            Para i=1 hasta n hacer:
+                T[0][i]= 1; T[i][0]= 0
+            Fin-Para
+            Para i=2 hasta n hacer:
+                Para j=2 hasta n hacer:
+                    T[i][j]= p*T[i-1][j] + (1-p)*T[i][j-1]
+                Fin-Para
+            Fin-Para
+            Devolver T[n][n]
+
+//tipo2: 
+Problema del cambio de monedas 
+    Supongamos que compramos un refresco en una máquina y, tras pagar, esta tiene que devolver un cambio N con el mínimo
+        número de monedas ¿Qué algoritmo debería seguir la máquina?
+    Hay monedas de n valores diferentes.
+        Las monedas tipo i tienen valor di>0.
+        Las monedas están ordenadas por su valor, en orden creciente.
+        Al cliente hay que devolverle un cambio igual a N.
+        Objetivo: minimizar el número de monedas a devolver.
+        
+    Idea General: 
+        El algoritmo se basa en devolver el minimo numero de monedas al dar el cambio, tenemos que construir un algoritmo
+        de programacion dinamica que nos garantice la solucion optima usando una memoria dinamica, la cual llamaremos matriz de adyacencia
+        El objetivo es conocer el minimo numero de monedas para devolver la cantidad N considerando usar cualquier subconjunto de monedas de 
+        cualquier tipo 
+
+    Caso Base: 
+        Asumimos que T(n,N) es una tupla de dos elementos donde n = numero de monedas de diferente valor para dar cambio y 
+        N = el cambio que tenemos que dar
+
+        T(i,0) = 0 No hay que devolver cambio 
+        T(1,j) = j Solo deovlvermos monedas de tipo 1 
+    
+    Caso General: 
+        T[i][j] = min{T[i-1], 1+T[i][j-di]}
+
+        El caso general supoe que para devolver la cantidad j usando solo monedas desde el tipo 1 hasta el i, el minimo numero de monedas 
+        se conseguira de una de las dos formas siguientes: 
+            -No echar una moneda de tipo i y usar solo desde 1 hasta i-1
+            -Echar una moneda de tipo i, quedando por devolver sola la cantidad j-di y viendo si podemos seguir echando monedas del mismo tipo i
+
+    Diseño del problema: 
+        Vamos a representar la solucion al problema como una tabla T(i,j); 
+            -Filas: Asociadas a los tipos de monedas, ordenados ascendentemente por su valor
+            - Columnas: Cantidades a devolver, desde 0 hasta N 
+            - Celdas: Cada celda T(i,j) contendra el minimo numero de moneddas necesario para edvolver la cantidad j asumiendo que consideramos 
+            devolver monedas desde el tipo 1 hasta el i
+
+            Ejemplo: Devolver 8cts con monedas de 1, 4 y 6 cts
+    
+                       0 1 2 3 4 5 6 7 8
+                    d1 0 1 2 3 4 5 6 7 8
+                    d2 0 1 2 3 1 2 3 4 2
+                    d3 0 1 2 3 1 2 1 2 2
+
+    Diseño del algoritmo: 
+        function calculoMoneda(i,j,T)
+            if(j<0)
+                return = inf 
+            if(T[i][j] != inf)
+                return T[i][j]
+            if(i==1)
+                T[i][j] = j
+                return j
+            if(j==0)
+                T[i][j] = 0
+                return 0
+            
+            T[i][j] = min{calculoMoneda(i-1,T), calculoMoneda(i,j-di, T)+1}
+
+            return T[i][j]
+        
+    
+
+//tipo3:
+Problema de la mochila 0 1
+    Idea General:
+        Tenemos una mochila con una capacidad de peso máxima M, y un conjunto de n objetos a transportar.
+            Cada objeto i tiene un peso wi y llevarlo supone un beneficio bi. El problema consiste en seleccionar qué objetos incluir en la
+            mochila de modo que se maximice el beneficio, sin superar la capacidad de la misma, sabiendo que los objetos son indivisibles en
+            fracciones y sólo se puede seleccionar llevar el objeto completo o no llevarlo. Si llevamos el objeto i, entonces xi= 1. En caso contrario, xi= 0.
+    Diseño del problema:
+        Capacidad máxima de la mochila M
+        Número de objetos n=1, 2, ..., n
+        Beneficio de llevar cada objeto bi
+        Peso de cada objeto wi
+        Supondremos los objetos ordenados de menor a mayor bi/wi
+        Función objetivo: Maximizar cada objeto por su beneficio sujeto a cada objeto por su peso
+        xi son variables para llevar (1) o no llevar (0) el objeto i
+        Llamaremos T(i,j) al beneficio de haber considerado llevar los objetos desde el 1 al i, sabiendo que la capacidad de la mochila es j.
+        El problema se puede resolver por etapas: En cada etapa i seleccionaremos llevar (o no) el objeto i, considerando la capacidad
+            restante de la mochila. Si lo llevamos, restaremos su peso a j.
+        Objetivo: Conocer T(n,M) = Beneficio maximo de llevar o no objetos desde el 1 hasta el n para una capacidad M
+
+    Casos Base:
+        T(i, 0)= 0 No hay capacidad de mochila disponible, no hay beneficio.
+        T(1, 1..w1)= 0; T(1, w1 ..M)= b1 Si sólo consideramos llevar el objeto 1, sólo podremos llevarlo para una capacidad de mochila igual o superior a su peso.
+        T(i,j)=-∞, cuando j<0 No se puede echar en la mochila un elemento que supere su peso. Es solución no válida y usaremos el valor -∞ para plantear las recurrencias.  
+
+    Caso general:
+        T[i][j]= max{T[i-1][j], bi+T[i-1][j-wi]}
+
+        El caso general supone que para una capacidad de mochila j considerando echar (o no) los objetos desde el tipo 1 hasta el i, el máximo beneficio se conseguirá de una de las dos formas siguientes:
+        No echar el objeto de tipo i y considerar echar sólo desde 1 hasta i-1: primera parte T[i-1][j]
+        Echar el objeto de tipo i , restando su peso de la capacidad de la mochila j-wi y aumentando el beneficio en bi. Seguidamente,
+            viendo si podemos echar (o no) objetos desde el tipo 1 hasta el tipo i-1: Segunda parte bi+T[i-1][j-wi]
+
+    Representacion:
+    
+
+Procedimiento Camino(MatrizAdy[0..N][0..N], T[0..N][0..N])
+    Para i=0 hasta N, hacer:
+        Para j=0 hasta N, hacer:
+            D[i][j]= MatrizAdy[i][j]
+            T[i][j]= 0
+        Fin-Para
+    Fin-Para
+    Para k=0 hasta N, hacer:
+        Para i=0 hasta N, hacer:
+            Para i=0 hasta N, hacer:
+                Si D[i][j] > D[i][k]+D[k][j], entonces:
+                    T[i][j] = min{camino(D[i][j-1],T), camino( D[i-1][j], T)+1}
+                Fin-Si
+            Fin-Para
+        Fin-Para
+    Fin-Para
+    Devolver D,T
+
+//tipo4: 
+Problema de los caminos minimos 
+
