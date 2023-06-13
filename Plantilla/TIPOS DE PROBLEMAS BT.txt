@@ -1,0 +1,63 @@
+TIPOS DE PROBLEMAS BT
+
+//Tipo1
+Backtracking 
+    Idea general: 
+        - Hacer busquedas exhaustivas en grafos dirigidos 
+        - Se realiza un poda de ramas 
+        - Las soluciones son secuencias de decisiones
+        - Criterio de parada 
+
+    Componentes: 
+        - Representacion para el conjunto de decisiones 
+        - Restricciones implicitas 
+        - Restricciones explicitas 
+        - Estructura del grafos
+        - Funcion objetivo
+        - Funcion poda 
+    
+    Plantilla: 
+        Algoritmo S = Backtracking()
+            Para cada valor v posible desde Xk hacer: 
+                Si es factible T U {v} entonces: 
+                    Si T U {v} es solucion 
+                        Devolver T U {v}
+                    En otro caso    
+                        Si k < t entonces 
+                            U = Backtracking (k+1, TU{v})
+                            Si U es solucion    
+                                Devolver U
+            Devolver No hay solucion
+
+
+//Tipo2: 
+BranchAndBound
+    Componentes: 
+        - Representacion
+        - Funcion objetivo
+        - Restricciones implicitas 
+        - Restricciones explicitas 
+        - Funcion eleccion 
+        - Calculo de cotas 
+        - Arbol de busqueda 
+
+    Plantilla: 
+        Procedimiento BranchAndBound(Problema P)
+            C = cola con prioridad 
+            MS = Solucion Inicial al problema p
+            crear r = nodo raiz del arbol 
+            Insertar r en C
+            Mientras C no este vacio hacer: 
+                x = quitar primer elemento de C
+                Para cada nodo hijo v posible de x hacer: 
+                    Si v es nodo hoja entonces: 
+                        Si coste(v) mayor que coste (MS) entonces 
+                            actualizas MS = coste(v)
+                            Eliminar de C todos los nodos cons cota inferior >= coste(MS)
+                        Fin-Si
+                        En otro caso    
+                            Si cotaInferior(v) < coste (MS) 
+                                insertar v en C 
+                Fin-Para
+            fin-mientras 
+            Devolver MS
