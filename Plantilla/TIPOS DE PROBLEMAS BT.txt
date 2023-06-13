@@ -18,6 +18,10 @@ Backtracking
     
     Plantilla: 
         Algoritmo S = Backtracking()
+            C = cola con prioridad 
+            MS = Solucion Inicial al problema p
+            crear r = nodo raiz del arbol 
+            Insertar r en C
             Para cada valor v posible desde Xk hacer: 
                 Si es factible T U {v} entonces: 
                     Si T U {v} es solucion 
